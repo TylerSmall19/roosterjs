@@ -5,11 +5,11 @@ import {
     HyperLink,
     Paste,
     ContentEdit,
-    Watermark,
-    TableResize,
 } from 'roosterjs-editor-plugins';
 import { ImageResize } from 'roosterjs-plugin-image-resize';
 import { Editor, EditorPlugin, EditorOptions } from 'roosterjs-editor-core';
+import { TableResize } from 'roosterjs-plugin-table-resize';
+import { Watermark } from 'roosterjs-plugin-watermark';
 import { setCurrentEditor } from './currentEditor';
 import getCurrentEditor from './currentEditor';
 import updateSampleCode from './updateSampleCode';
@@ -49,7 +49,7 @@ export function initEditorForOptions() {
         plugins.push(new HyperLink());
     }
     if ((document.getElementById('pasteCheckbox') as HTMLInputElement).checked) {
-        plugins.push(new Paste(true));
+        plugins.push(new Paste());
     }
     if ((document.getElementById('contentEditCheckbox') as HTMLInputElement).checked) {
         plugins.push(new ContentEdit());

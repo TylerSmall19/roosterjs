@@ -9,8 +9,7 @@ import getTagOfNode from './getTagOfNode';
  */
 export default function changeElementTag<K extends keyof HTMLElementTagNameMap>(
     element: HTMLElement,
-    newTag: K,
-    deprecated?: any
+    newTag: K
 ): HTMLElementTagNameMap[K] {
     let newElement = element.ownerDocument.createElement(newTag);
 

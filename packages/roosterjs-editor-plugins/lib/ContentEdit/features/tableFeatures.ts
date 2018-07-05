@@ -1,8 +1,8 @@
 import { ContentEditFeature } from '../ContentEditFeatures';
 import { Editor } from 'roosterjs-editor-core';
 import { PluginEvent, PositionType } from 'roosterjs-editor-types';
-import { VTable, contains, getTagOfNode } from 'roosterjs-editor-dom';
-import { cacheGetNodeAtCursor, getNodeAtCursor } from 'roosterjs-editor-api';
+import { contains, getTagOfNode } from 'roosterjs-editor-dom';
+import { VTable, cacheGetNodeAtCursor, getNodeAtCursor } from 'roosterjs-editor-api';
 
 const KEY_TAB = 9;
 const KEY_UP = 38;

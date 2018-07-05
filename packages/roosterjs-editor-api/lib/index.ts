@@ -1,8 +1,5 @@
-export {
-    default as getNodeAtCursor,
-    cacheGetListElement,
-    cacheGetNodeAtCursor,
-} from './format/getNodeAtCursor';
+export { default as VTable, VCell } from './table/VTable';
+export { default as getNodeAtCursor, cacheGetNodeAtCursor } from './format/getNodeAtCursor';
 export { default as clearFormat } from './format/clearFormat';
 export { default as createLink } from './format/createLink';
 export { default as getFormatState } from './format/getFormatState';
@@ -30,18 +27,3 @@ export { default as toggleSubscript } from './format/toggleSubscript';
 export { default as toggleSuperscript } from './format/toggleSuperscript';
 export { default as toggleUnderline } from './format/toggleUnderline';
 export { default as toggleHeader } from './format/toggleHeader';
-
-// Deprecated
-export { default as cacheGetListState } from './deprecated/cacheGetListState';
-export { default as execFormatWithUndo, Formatter } from './deprecated/execFormatWithUndo';
-export {
-    default as CursorData,
-    cacheGetCursorEventData,
-    clearCursorEventDataCache,
-} from './deprecated/CursorData';
-export { default as queryNodesWithSelection } from './deprecated/queryNodesWithSelection';
-export {
-    default as replaceTextBeforeCursorWithNode,
-    validateAndGetRangeForTextBeforeCursor,
-} from './deprecated/replaceTextBeforeCursorWithNode';
-export { default as replaceRangeWithNode } from './deprecated/replaceRangeWithNode';

@@ -4,7 +4,6 @@ import createEditorCore from './createEditorCore';
 import {
     ChangeSource,
     ContentPosition,
-    ContentScope,
     DefaultFormat,
     DocumentCommand,
     ExtractContentEvent,
@@ -371,13 +370,6 @@ export default class Editor {
         }
     }
 
-    /**
-     * @deprecated Use queryElements instead
-     */
-    public queryContent(selector: string): NodeListOf<Element> {
-        return this.core.contentDiv.querySelectorAll(selector);
-    }
-
     //#endregion
 
     //#region Focus and Selection
@@ -389,15 +381,6 @@ export default class Editor {
      */
     public getSelectionRange(): Range {
         return this.core.api.getSelectionRange(this.core, true /*tryGetFromCache*/);
-    }
-
-    /**
-     * @deprecated
-     * Get current selection
-     * @return current selection object
-     */
-    public getSelection(): Selection {
-        return this.core.document.defaultView.getSelection();
     }
 
     /**
@@ -493,27 +476,6 @@ export default class Editor {
                 this.removeSelectionMarker(Browser.isSafari || Browser.isChrome /*applySelection*/);
             }
         }
-    }
-
-    /**
-     * @deprecated Use select() instead
-     * Update selection in editor
-     * @param selectionRange The selection range to update to
-     * @returns true if selection range is updated. Otherwise false.
-     */
-    public updateSelection(selectionRange: Range): boolean {
-        return this.select(selectionRange);
-    }
-
-    /**
-     * @deprecated
-     * Save the current selection in editor so that when focus again, the selection can be restored
-     */
-    public saveSelectionRange() {
-        this.core.cachedSelectionRange = this.core.api.getSelectionRange(
-            this.core,
-            false /*tryGetFromCache*/
-        );
     }
 
     /**
@@ -650,18 +612,6 @@ export default class Editor {
     public redo() {
         this.focus();
         this.core.undo.redo();
-    }
-
-    /**
-     * @deprecated Use editWithUndo() instead
-     */
-    public runWithoutAddingUndoSnapshot(callback: () => void) {
-        try {
-            this.core.suspendUndo = true;
-            callback();
-        } finally {
-            this.core.suspendUndo = false;
-        }
     }
 
     /**
@@ -808,25 +758,6 @@ export default class Editor {
     }
 
     /**
-     * @deprecated Use getBodyTraverser, getSelectionTraverser, getBlockTraverser instead
-     */
-    public getContentTraverser(
-        scope: ContentScope,
-        position: ContentPosition = ContentPosition.SelectionStart
-    ): ContentTraverser {
-        switch (scope) {
-            case ContentScope.Block:
-                return this.getBlockTraverser(position);
-            case ContentScope.Selection:
-                return this.getSelectionTraverser();
-            case ContentScope.Body:
-                return this.getBodyTraverser();
-        }
-
-        return null;
-    }
-
-    /**
      * Run a callback function asynchronously
      * @param callback The callback function to run
      */
@@ -894,7 +825,10 @@ export default class Editor {
                 Browser.isIEOrEdge ? 'beforedeactivate' : 'blur',
                 null,
                 () => {
-                    this.saveSelectionRange();
+                    this.core.cachedSelectionRange = this.core.api.getSelectionRange(
+                        this.core,
+                        false /*tryGetFromCache*/
+                    );
                 }
             ),
         ];

@@ -176,7 +176,7 @@ export default class ImageResize implements EditorPlugin {
             if (this.forcePreserveRatio || e.shiftKey) {
                 let ratio =
                     this.startWidth > 0 && this.startHeight > 0
-                        ? this.startWidth * 1.0 / this.startHeight
+                        ? (this.startWidth * 1.0) / this.startHeight
                         : 0;
                 if (ratio > 0) {
                     if (newWidth < newHeight * ratio) {
@@ -300,23 +300,5 @@ export default class ImageResize implements EditorPlugin {
 
     private isWest(direction: string): boolean {
         return direction && direction.substr(1, 1) == 'w';
-    }
-}
-
-/**
- * @deprecated Use ImageResize instead
- */
-export class ImageResizePlugin extends ImageResize {
-    /**
-     * @deprecated Use ImageResize instead
-     */
-    constructor(
-        minWidth: number = 10,
-        minHeight: number = 10,
-        selectionBorderColor: string = '#DB626C',
-        forcePreserveRatio: boolean = false
-    ) {
-        super(minWidth, minHeight, selectionBorderColor, forcePreserveRatio);
-        console.warn('ImageResizePlugin class is deprecated. Use ImageResize class instead');
     }
 }

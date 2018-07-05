@@ -17,7 +17,7 @@ export default function getNodeAtCursor(
 ): Node {
     let node = startNode;
     if (!node && editor.hasFocus()) {
-        let sel = editor.getSelection();
+        let sel = editor.getDocument().defaultView.getSelection();
         node = sel ? sel.focusNode : null;
     }
 
@@ -66,11 +66,4 @@ export function cacheGetNodeAtCursor(
     return cacheGetEventData(event, 'GET_NODE_AT_CURSOR_' + tagNames, () =>
         getNodeAtCursor(editor, expectedTags)
     );
-}
-
-/**
- * @deprecated Use cacheGetNodeAtCursor instead
- */
-export function cacheGetListElement(editor: Editor, event?: PluginEvent): Node {
-    return cacheGetNodeAtCursor(editor, event, 'LI');
 }

@@ -1,7 +1,7 @@
+import VTable from './VTable';
 import getNodeAtCursor from '../format/getNodeAtCursor';
 import { Editor } from 'roosterjs-editor-core';
 import { TableOperation, ChangeSource } from 'roosterjs-editor-types';
-import { VTable } from 'roosterjs-editor-dom';
 
 /**
  * Edit table with given operation. If there is no table at cursor then no op.

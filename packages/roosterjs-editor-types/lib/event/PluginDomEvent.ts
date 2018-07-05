@@ -6,13 +6,12 @@ import PluginEventType from './PluginEventType';
  */
 interface PluginDomEvent extends BasePluginEvent {
     eventType:
-        PluginEventType.CompositionEnd |
-        PluginEventType.MouseDown |
-        PluginEventType.MouseUp |
-        PluginEventType.KeyDown |
-        PluginEventType.KeyPress |
-        PluginEventType.KeyUp |
-        PluginEventType.Idle,
+        | PluginEventType.CompositionEnd
+        | PluginEventType.MouseDown
+        | PluginEventType.MouseUp
+        | PluginEventType.KeyDown
+        | PluginEventType.KeyPress
+        | PluginEventType.KeyUp;
 
     /**
      * original DOM event

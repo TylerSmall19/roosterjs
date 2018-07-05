@@ -33,13 +33,9 @@ export default class Paste implements EditorPlugin {
 
     /**
      * Create an instance of Paste
-     * @param deprecated Deprecated parameter only used for compatibility with old code
      * @param htmlPropertyCallbacks A callback to help handle html sanitization
      */
-    constructor(
-        deprecated?: boolean,
-        private htmlPropertyCallbacks?: SanitizeHtmlPropertyCallback
-    ) {}
+    constructor(private htmlPropertyCallbacks?: SanitizeHtmlPropertyCallback) {}
 
     public initialize(editor: Editor) {
         this.editor = editor;

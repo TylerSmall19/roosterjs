@@ -1,6 +1,6 @@
 {
   "name": "roosterjs",
-  "version": "6.12.0",
+  "version": "7.0.0",
   "description": "Framework-independent javascript editor",
   "repository": {
     "type": "git",
@@ -8,6 +8,7 @@
   },
   "license": "MIT",
   "scripts": {
+    "checkDependency": "node tools/checkDependency.js",
     "clean": "rimraf dist",
     "copysample": "node tools/copy-sample-code.js",
     "dts": "node tools/dts.js",
@@ -20,27 +21,30 @@
     "start": "webpack-dev-server",
     "test": "npm run b && karma start",
     "test:debug": "npm run b && karma start --no-single-run",
+    "prettier": "node node_modules/prettier/bin-prettier --tab-width 4 --print-width 100 --write --trailing-comma es5 --jsx-bracket-same-line --single-quote \"packages/**/*.ts\"",
     "publish": "node tools/publish-all.js"
   },
   "devDependencies": {
     "@types/jasmine": "2.6.0",
     "glob": "7.1.2",
     "jasmine-core": "2.8.0",
-    "karma": "1.7.1",
+    "karma": "2.0.0",
     "karma-chrome-launcher": "2.2.0",
-    "karma-jasmine": "1.1.0",
+    "karma-jasmine": "1.1.1",
     "karma-phantomjs-launcher": "1.0.4",
     "karma-sourcemap-loader": "0.3.7",
-    "karma-webpack": "2.0.4",
+    "karma-webpack": "3.0.0",
     "ncp": "2.0.0",
+    "prettier": "1.13.7",
     "rimraf": "2.6.2",
     "toposort": "1.0.4",
-    "ts-loader": "2.3.7",
-    "tslint": "5.7.0",
-    "tslint-eslint-rules": "4.1.1",
-    "tslint-microsoft-contrib": "5.0.1",
-    "typescript": "2.5.3",
-    "webpack": "3.6.0",
-    "webpack-dev-server": "2.9.1"
+    "ts-loader": "4.2.0",
+    "tslint": "5.9.1",
+    "tslint-eslint-rules": "5.1.0",
+    "tslint-microsoft-contrib": "5.0.3",
+    "typescript": "2.8.3",
+    "webpack": "4.5.0",
+    "webpack-cli": "2.0.14",
+    "webpack-dev-server": "3.1.3"
   }
 }

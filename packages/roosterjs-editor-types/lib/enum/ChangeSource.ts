@@ -39,11 +39,6 @@ const enum ChangeSource {
     SetContent = 'SetContent',
 
     /**
-     * @deprecated
-     */
-    Undo = 'Undo',
-
-    /**
      * Content changed by cut operation
      */
     Cut = 'Cut',
