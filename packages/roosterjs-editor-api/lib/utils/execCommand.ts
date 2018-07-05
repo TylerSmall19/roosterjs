@@ -1,5 +1,5 @@
-import getFormatState from './getFormatState';
-import getNodeAtCursor from './getNodeAtCursor';
+import getFormatState from '../format/getFormatState';
+import getNodeAtCursor from '../format/getNodeAtCursor';
 import {
     DefaultFormat,
     DocumentCommand,

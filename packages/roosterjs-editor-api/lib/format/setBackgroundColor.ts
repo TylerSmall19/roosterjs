@@ -1,4 +1,5 @@
 import { Editor } from 'roosterjs-editor-core';
+import applyInlineStyle from '../utils/applyInlineStyle';
 
 /**
  * Set background color at current selection
@@ -9,5 +10,5 @@ import { Editor } from 'roosterjs-editor-core';
  */
 export default function setBackgroundColor(editor: Editor, color: string) {
     color = color.trim();
-    editor.applyInlineStyle(element => (element.style.backgroundColor = color));
+    applyInlineStyle(editor, element => (element.style.backgroundColor = color));
 }

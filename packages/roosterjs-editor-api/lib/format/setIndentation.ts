@@ -1,4 +1,4 @@
-import execCommand from './execCommand';
+import execCommand from '../utils/execCommand';
 import { Editor } from 'roosterjs-editor-core';
 import { DocumentCommand, Indentation, ChangeSource, QueryScope } from 'roosterjs-editor-types';
 import getNodeAtCursor from './getNodeAtCursor';

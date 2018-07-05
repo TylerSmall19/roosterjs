@@ -493,60 +493,6 @@ export default class Editor {
         return position.getRect();
     }
 
-    /**
-     * @deprecated This function will be moved to roosterjs-editor-api in next major release
-     * Apply inline style to current selection
-     * @param callback The callback function to apply style
-     */
-    public applyInlineStyle(callback: (element: HTMLElement) => any) {
-        this.focus();
-        let range = this.getSelectionRange();
-        let collapsed = range && range.collapsed;
-
-        if (collapsed) {
-            this.addUndoSnapshot();
-
-            // Create a new span to hold the style.
-            // Some content is needed to position selection into the span
-            // for here, we inject ZWS - zero width space
-            let element = fromHtml('<SPAN>\u200B</SPAN>', this.getDocument())[0] as HTMLElement;
-            callback(element);
-            this.insertNode(element);
-
-            // reset selection to be after the ZWS (rather than selecting it)
-            // This is needed so that the cursor still looks blinking inside editor
-            // This also means an extra ZWS will be in editor
-            this.select(element, PositionType.End);
-        } else {
-            this.addUndoSnapshot(() => {
-                // This is start and end node that get the style. The start and end needs to be recorded so that selection
-                // can be re-applied post-applying style
-                let firstNode: Node;
-                let lastNode: Node;
-                let contentTraverser = this.getSelectionTraverser();
-
-                // Just loop through all inline elements in the selection and apply style for each
-                let inlineElement = contentTraverser.currentInlineElement;
-                while (inlineElement) {
-                    // Need to obtain next inline first. Applying styles changes DOM which may mess up with the navigation
-                    let nextInline = contentTraverser.getNextInlineElement();
-                    inlineElement.applyStyle(element => {
-                        callback(element as HTMLElement);
-                        firstNode = firstNode || element;
-                        lastNode = element;
-                    });
-
-                    inlineElement = nextInline;
-                }
-
-                // When selectionStartNode/EndNode is set, it means there is DOM change. Re-create the selection
-                if (firstNode && lastNode) {
-                    this.select(firstNode, PositionType.Before, lastNode, PositionType.After);
-                }
-            }, ChangeSource.Format);
-        }
-    }
-
     //#endregion
 
     //#region EVENT API
