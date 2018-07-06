@@ -1,16 +1,12 @@
+import InlineElement from './InlineElement';
 import Position from '../selection/Position';
 import contains from '../utils/contains';
 import getTagOfNode from '../utils/getTagOfNode';
 import isDocumentPosition from '../utils/isDocumentPosition';
-import isEditorPointAfter from '../utils/isEditorPointAfter';
 import isNodeAfter from '../utils/isNodeAfter';
 import wrap from '../utils/wrap';
 import {
-    BlockElement,
     DocumentPosition,
-    EditorPoint,
-    InlineElement,
-    NodeBoundary,
     NodeType,
     PositionType,
 } from 'roosterjs-editor-types';
@@ -23,7 +19,7 @@ import { getNextLeafSibling, getPreviousLeafSibling } from '../domWalker/getLeaf
  * just identify themself for a certain type
  */
 class NodeInlineElement implements InlineElement {
-    constructor(private containerNode: Node, private parentBlock: BlockElement) {}
+    constructor(private containerNode: Node) {}
 
     /**
      * The text content for this inline element
@@ -42,36 +38,31 @@ class NodeInlineElement implements InlineElement {
         return this.containerNode;
     }
 
-    // Get the parent block
-    public getParentBlock(): BlockElement {
-        return this.parentBlock;
-    }
-
     /**
-     * Get the start point of the inline element
+     * Get the start position of the inline element
      */
-    public getStartPoint(): EditorPoint {
-        // For an editor point, we always want it to point to a leaf node
+    public getStartPosition(): Position {
+        // For a position, we always want it to point to a leaf node
         // We should try to go get the lowest first child node from the container
         let firstChild = this.containerNode;
         while (firstChild.firstChild) {
             firstChild = firstChild.firstChild;
         }
 
-        return new Position(firstChild, 0).toEditorPoint();
+        return new Position(firstChild, 0);
     }
 
     /**
-     * Get the end point of the inline element
+     * Get the end position of the inline element
      */
-    public getEndPoint(): EditorPoint {
-        // For an editor point, we always want it to point to a leaf node
+    public getEndPosition(): Position {
+        // For a position, we always want it to point to a leaf node
         // We should try to go get the lowest last child node from the container
         let lastChild = this.containerNode;
         while (lastChild.lastChild) {
             lastChild = lastChild.lastChild;
         }
-        return new Position(lastChild, PositionType.End).toEditorPoint();
+        return new Position(lastChild, PositionType.End);
     }
 
     /**
@@ -85,19 +76,17 @@ class NodeInlineElement implements InlineElement {
      * Checks if an inline element is after the current inline element
      */
     public isAfter(inlineElement: InlineElement): boolean {
-        return inlineElement
-            ? isNodeAfter(this.containerNode, inlineElement.getContainerNode())
-            : false;
+        return isNodeAfter(this.containerNode, inlineElement.getContainerNode());
     }
 
     /**
      * Checks if an editor point is contained in the inline element
      */
-    public contains(editorPoint: EditorPoint): boolean {
-        let startPoint = this.getStartPoint();
-        let endPoint = this.getEndPoint();
+    public contains(position: Position): boolean {
+        let start = this.getStartPosition();
+        let end = this.getEndPosition();
         return (
-            isEditorPointAfter(editorPoint, startPoint) && isEditorPointAfter(endPoint, editorPoint)
+            position.isAfter(start) && end.isAfter(position)
         );
     }
 
@@ -106,8 +95,8 @@ class NodeInlineElement implements InlineElement {
      */
     public applyStyle(
         styler: (node: Node) => void,
-        fromPoint?: EditorPoint,
-        toPoint?: EditorPoint
+        from?: Position,
+        to?: Position
     ): void {
         let ownerDoc = this.containerNode.ownerDocument;
 
@@ -117,9 +106,9 @@ class NodeInlineElement implements InlineElement {
         let endOffset = NodeBoundary.End;
 
         // Adjust the start point
-        if (fromPoint) {
-            startNode = fromPoint.containerNode;
-            startOffset = fromPoint.offset;
+        if (from) {
+            startNode = from.node;
+            startOffset = from.offset;
             if (
                 (startNode.nodeType == NodeType.Text &&
                     startOffset == startNode.nodeValue.length) ||
@@ -138,9 +127,9 @@ class NodeInlineElement implements InlineElement {
         }
 
         // Adjust the end point
-        if (toPoint) {
-            endNode = toPoint.containerNode;
-            endOffset = toPoint.offset;
+        if (to) {
+            endNode = to.node;
+            endOffset = to.offset;
 
             if (endOffset == NodeBoundary.Begin) {
                 // The point is at the begin of container element, use previous leaf

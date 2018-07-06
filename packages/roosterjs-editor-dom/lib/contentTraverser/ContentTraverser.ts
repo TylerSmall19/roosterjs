@@ -4,10 +4,11 @@ import Position from '../selection/Position';
 import SelectionBlockScoper from './SelectionBlockScoper';
 import SelectionScoper from './SelectionScoper';
 import TraversingScoper from './TraversingScoper';
+import getBlockElementAtNode from '../blockElements/getBlockElementAtNode';
+import getNextPreviousInlineElement from '../inlineElements/getNextPreviousInlineElement';
 import { BlockElement, ContentPosition, InlineElement } from 'roosterjs-editor-types';
 import { getInlineElementBeforeAfter } from '../inlineElements/getInlineElementBeforeAfter';
 import { getLeafSibling } from '../domWalker/getLeafSibling';
-import { getNextPreviousInlineElement, getBlockElementAtNode } from '../blockElements/BlockElement';
 
 /**
  * The provides traversing of content inside editor.
@@ -142,7 +143,7 @@ export default class ContentTraverser {
         if (current instanceof EmptyInlineElement) {
             newInline = getInlineElementBeforeAfter(
                 this.scoper.rootNode,
-                current.getPosition(),
+                current.getStartPosition(),
                 isNext
             );
             newInline = current.getParentBlock().isInBlock(newInline) ? newInline : null;

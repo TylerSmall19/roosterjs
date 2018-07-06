@@ -119,9 +119,7 @@ export default class PositionContentSearcher {
 
                     // on first time when end is matched, set the end of range
                     if (!endPosition) {
-                        endPosition = Position.FromEditorPoint(textInline.getStartPoint()).move(
-                            nodeIndex + 1
-                        );
+                        endPosition = textInline.getStartPosition().move(nodeIndex + 1);
                     }
                 } else if (exactMatch || endPosition) {
                     // Mismatch found when exact match or end already match, so return since matching failed
@@ -131,9 +129,7 @@ export default class PositionContentSearcher {
 
             // when textIndex == -1, we have a successful complete match
             if (textIndex == -1) {
-                startPosition = Position.FromEditorPoint(textInline.getStartPoint()).move(
-                    nodeIndex + 1
-                );
+                startPosition = textInline.getStartPosition().move(nodeIndex + 1);
                 return true;
             }
 

@@ -1,4 +1,4 @@
-import { NodeType, PositionType, Rect, EditorPoint } from 'roosterjs-editor-types';
+import { NodeType, PositionType, Rect } from 'roosterjs-editor-types';
 import Browser from '../utils/Browser';
 import contains from '../utils/contains';
 import getElementOrParentElement from '../utils/getElementOrParentElement';
@@ -216,23 +216,6 @@ export default class Position {
      */
     static getEnd(range: Range) {
         return new Position(range.endContainer, range.endOffset);
-    }
-
-    /**
-     * @deprecated Do not use
-     */
-    static FromEditorPoint(point: EditorPoint) {
-        return new Position(point.containerNode, point.offset);
-    }
-
-    /**
-     * @deprecated Do not use
-     */
-    toEditorPoint() {
-        return {
-            containerNode: this.node,
-            offset: this.offset == 0 && this.isAtEnd ? 1 : this.offset,
-        };
     }
 }
 

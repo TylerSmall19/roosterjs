@@ -1,9 +1,11 @@
+import InlineElement from './InlineElement';
 import PartialInlineElement from './PartialInlineElement';
 import Position from '../selection/Position';
+import getBlockElementAtNode from '../blockElements/getBlockElementAtNode';
+import resolveInlineElement from './resolveInlineElement';
 import shouldSkipNode from '../domWalker/shouldSkipNode';
-import { getInlineElementAtNode } from '../blockElements/BlockElement';
 import { getLeafSibling } from '../domWalker/getLeafSibling';
-import { NodeType, InlineElement } from 'roosterjs-editor-types';
+import { NodeType } from 'roosterjs-editor-types';
 
 /**
  * Get inline element before a position
@@ -53,13 +55,12 @@ export function getInlineElementBeforeAfter(root: Node, position: Position, isAf
         node = getLeafSibling(root, node, isAfter);
     }
 
-    let inlineElement = getInlineElementAtNode(root, node);
-    let editorPoint = position.toEditorPoint();
+    let inlineElement = resolveInlineElement(node, getBlockElementAtNode(root, node));
 
-    if (inlineElement && (isPartial || inlineElement.contains(editorPoint))) {
+    if (inlineElement && (isPartial || inlineElement.contains(position))) {
         inlineElement = isAfter
-            ? new PartialInlineElement(inlineElement, editorPoint, null)
-            : new PartialInlineElement(inlineElement, null, editorPoint);
+            ? new PartialInlineElement(inlineElement, position, null)
+            : new PartialInlineElement(inlineElement, null, position);
     }
 
     return inlineElement;

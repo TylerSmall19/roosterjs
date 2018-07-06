@@ -1,19 +1,19 @@
+import BlockElement from '../blockElements/BlockElement';
 import ImageInlineElement from './ImageInlineElement';
+import InlineElement from './InlineElement';
 import LinkInlineElement from './LinkInlineElement';
 import NodeInlineElement from './NodeInlineElement';
 import TextInlineElement from './TextInlineElement';
 import getTagOfNode from '../utils/getTagOfNode';
-import { BlockElement, InlineElement, NodeType } from 'roosterjs-editor-types';
+import { NodeType } from 'roosterjs-editor-types';
 
 /**
  * Resolve an inline element by a leaf node
  * @param node The node to resolve from
- * @param rootNode Root node of current scope
  * @param parentBlock The parent block element
  */
 export default function resolveInlineElement(
     node: Node,
-    rootNode: Node,
     parentBlock: BlockElement
 ): InlineElement {
     let nodeChain = [node];
@@ -31,13 +31,13 @@ export default function resolveInlineElement(
         let currentNode = nodeChain[i];
         let tag = getTagOfNode(currentNode);
         if (tag == 'A') {
-            inlineElement = new LinkInlineElement(currentNode, parentBlock);
+            inlineElement = new LinkInlineElement(currentNode);
         } else if (tag == 'IMG') {
-            inlineElement = new ImageInlineElement(currentNode, parentBlock);
+            inlineElement = new ImageInlineElement(currentNode);
         } else if (currentNode.nodeType == NodeType.Text) {
-            inlineElement = new TextInlineElement(currentNode, parentBlock);
+            inlineElement = new TextInlineElement(currentNode);
         }
     }
 
-    return inlineElement || new NodeInlineElement(node, parentBlock);
+    return inlineElement || new NodeInlineElement(node);
 }

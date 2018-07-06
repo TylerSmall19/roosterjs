@@ -1,5 +1,4 @@
-import BlockElement from './BlockElement';
-import EditorPoint from './EditorPoint';
+import Position from '../selection/Position';
 
 /**
  * This refers to an inline element (as opposed to block) in editor
@@ -24,19 +23,14 @@ interface InlineElement {
     getContainerNode(): Node;
 
     /**
-     * Get the parent block element of this inline element
-     */
-    getParentBlock(): BlockElement;
-
-    /**
      * Get the start position of this inline element
      */
-    getStartPoint(): EditorPoint;
+    getStartPosition(): Position;
 
     /**
      * Get the end position of this inline element
      */
-    getEndPoint(): EditorPoint;
+    getEndPosition(): Position;
 
     /**
      * Checks if the given inline element is after this inline element
@@ -51,7 +45,7 @@ interface InlineElement {
     /**
      * Checks if the given editor position is contained in this inline element
      */
-    contains(position: EditorPoint): boolean;
+    contains(position: Position): boolean;
 
     /**
      * Apply inline style to a region of an inline element. The region is identified thorugh the from and to point
@@ -60,7 +54,7 @@ interface InlineElement {
      * when the style has to be applied to partial of a text node, in that case, it wraps that in a SPAN and returns the SPAN
      * The actuall styling is done by consumer through the styler callback
      */
-    applyStyle(styler: (node: Node) => void, fromPoint?: EditorPoint, toPoint?: EditorPoint): void;
+    applyStyle(styler: (node: Node) => void, from?: Position, to?: Position): void;
 }
 
 export default InlineElement;

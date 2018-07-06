@@ -1,6 +1,5 @@
+import InlineElement from './InlineElement';
 import Position from '../selection/Position';
-import isEditorPointAfter from '../utils/isEditorPointAfter';
-import { BlockElement, EditorPoint, InlineElement } from 'roosterjs-editor-types';
 
 /**
  * Represents an empty InlineElement.
@@ -8,7 +7,7 @@ import { BlockElement, EditorPoint, InlineElement } from 'roosterjs-editor-types
  * An empty InlineElement means current position is at the end of a tag so nothing is included inside this element
  */
 export default class EmptyInlineElement implements InlineElement {
-    constructor(private position: Position, private parentBlock: BlockElement) {}
+    constructor(private position: Position) {}
 
     /**
      * Get the text content of this inline element
@@ -25,30 +24,16 @@ export default class EmptyInlineElement implements InlineElement {
     }
 
     /**
-     * Get the parent block element of this inline element
-     */
-    getParentBlock(): BlockElement {
-        return this.parentBlock;
-    }
-
-    /**
      * Get the start position of this inline element
      */
-    getStartPoint(): EditorPoint {
-        return this.position.toEditorPoint();
+    getStartPosition(): Position {
+        return this.position;
     }
 
     /**
      * Get the end position of this inline element
      */
-    getEndPoint(): EditorPoint {
-        return this.position.toEditorPoint();
-    }
-
-    /**
-     * Get the position of this inline element
-     */
-    getPosition(): Position {
+    getEndPosition(): Position {
         return this.position;
     }
 
@@ -56,7 +41,7 @@ export default class EmptyInlineElement implements InlineElement {
      * Checks if the given inline element is after this inline element
      */
     isAfter(inlineElement: InlineElement): boolean {
-        return isEditorPointAfter(this.position.toEditorPoint(), inlineElement.getEndPoint());
+        return this.position.isAfter(inlineElement.getEndPosition());
     }
 
     /**
@@ -69,7 +54,7 @@ export default class EmptyInlineElement implements InlineElement {
     /**
      * Checks if the given editor position is contained in this inline element
      */
-    contains(position: EditorPoint): boolean {
+    contains(position: Position): boolean {
         return false;
     }
 
@@ -78,7 +63,7 @@ export default class EmptyInlineElement implements InlineElement {
      */
     applyStyle(
         styler: (node: Node) => void,
-        fromPoint?: EditorPoint,
-        toPoint?: EditorPoint
+        from?: Position,
+        to?: Position
     ): void {}
 }
