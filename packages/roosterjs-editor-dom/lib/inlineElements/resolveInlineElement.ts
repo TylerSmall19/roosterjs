@@ -16,6 +16,9 @@ export default function resolveInlineElement(
     node: Node,
     parentBlock: BlockElement
 ): InlineElement {
+    if (!node || !parentBlock) {
+        return null;
+    }
     let nodeChain = [node];
     for (
         let parent = node.parentNode;

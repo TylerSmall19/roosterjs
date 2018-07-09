@@ -1,9 +1,8 @@
 import * as DomTestHelper from '../DomTestHelper';
-import {
-    StartEndBlockElement,
-    getNextPreviousInlineElement,
-} from '../../blockElements/BlockElement';
-import { InlineElement } from 'roosterjs-editor-types';
+import InlineElement from '../../inlineElements/InlineElement';
+import Position from '../../selection/Position';
+import StartEndBlockElement from '../../blockElements/StartEndBlockElement';
+import getNextPreviousInlineElement from '../../inlineElements/getNextPreviousInlineElement';
 
 let testID = 'StartEndBlockElement';
 
@@ -135,8 +134,8 @@ describe('StartEndBlockElement getFirstInlineElement()', () => {
     function runTest(input: string, startOffset: number, endOffset: number, node: Node) {
         // Arrange
         let [blockElement] = createStartEndBlockElementWithContent(input);
-        let startPoint = { containerNode: node, offset: startOffset };
-        let endPoint = { containerNode: node, offset: endOffset };
+        let startPoint = new Position(node, startOffset);
+        let endPoint = new Position(node, endOffset);
 
         // Act
         let inlineElement = blockElement.getFirstInlineElement();
@@ -176,8 +175,8 @@ describe('StartEndBlockElement getLastInlineElement()', () => {
     function runTest(input: string, startOffset: number, endOffset: number, node: Node) {
         // Arrange
         let [blockElement] = createStartEndBlockElementWithContent(input);
-        let startPoint = { containerNode: node, offset: startOffset };
-        let endPoint = { containerNode: node, offset: endOffset };
+        let startPoint = new Position(node, startOffset);
+        let endPoint = new Position(node, endOffset);
 
         // Act
         let inlineElement = blockElement.getLastInlineElement();
@@ -210,46 +209,6 @@ describe('StartEndBlockElement getLastInlineElement()', () => {
     it('input = <img>www.example.com', () => {
         let node = document.createTextNode('www.example.com');
         runTest('<img>www.example.com', 0, 15, node);
-    });
-});
-
-describe('StartEndBlockElement getInlineElements()', () => {
-    afterEach(() => {
-        DomTestHelper.removeElement(testID);
-    });
-
-    function runTest(
-        inlineElement: InlineElement,
-        startOffset: number,
-        endOffset: number,
-        node: Node
-    ) {
-        let startPoint = { containerNode: node, offset: startOffset };
-        let endPoint = { containerNode: node, offset: endOffset };
-        expect(
-            DomTestHelper.isInlineElementEqual(
-                inlineElement,
-                startPoint,
-                endPoint,
-                node.textContent
-            )
-        ).toBe(true);
-    }
-
-    it('input = <img>hello<a>www.example.com</a><br>', () => {
-        // Arrange
-        let [blockElement] = createStartEndBlockElementWithContent(
-            '<img>hello<a>www.example.com</a><br>'
-        );
-
-        // Act
-        let inlineElements = blockElement.getInlineElements();
-
-        // Assert
-        runTest(inlineElements[0], 0, 1, document.createElement('img'));
-        runTest(inlineElements[1], 0, 5, document.createTextNode('hello'));
-        runTest(inlineElements[2], 0, 15, document.createTextNode('www.example.com'));
-        runTest(inlineElements[3], 0, 1, document.createElement('br'));
     });
 });
 
@@ -416,23 +375,18 @@ describe('StartEndBlockElement isInBlock()', () => {
             testDiv.firstChild,
             testDiv.lastChild.previousSibling
         );
-        let inlineElements = blockElement.getInlineElements();
         let inlineElementAfterBlockElement = getInlineElementAfterBlockElement(
             testDiv,
             blockElement
         );
 
         // Act
-        let isElement1InBlock = blockElement.isInBlock(inlineElements[0]);
-        let isElement2InBlock = blockElement.isInBlock(inlineElements[1]);
-        let isElement3InBlock = blockElement.isInBlock(inlineElements[2]);
-        let isElement4InBlock = blockElement.isInBlock(inlineElements[3]);
+        let isElement1InBlock = blockElement.isInBlock(blockElement.getFirstInlineElement());
+        let isElement4InBlock = blockElement.isInBlock(blockElement.getLastInlineElement());
         let isElement5InBlock = blockElement.isInBlock(inlineElementAfterBlockElement);
 
         // Assert
         expect(isElement1InBlock).toEqual(true);
-        expect(isElement2InBlock).toEqual(true);
-        expect(isElement3InBlock).toEqual(true);
         expect(isElement4InBlock).toEqual(true);
         expect(isElement5InBlock).toEqual(false);
     });

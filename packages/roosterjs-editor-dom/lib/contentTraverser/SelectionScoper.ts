@@ -1,7 +1,8 @@
+import BlockElement from '../blockElements/BlockElement';
+import InlineElement from '../inlineElements/InlineElement';
 import Position from '../selection/Position';
 import TraversingScoper from './TraversingScoper';
-import { BlockElement, InlineElement } from 'roosterjs-editor-types';
-import { getBlockElementAtNode } from '../blockElements/BlockElement';
+import getBlockElementAtNode from '../blockElements/getBlockElementAtNode';
 import { getInlineElementAfter } from '../inlineElements/getInlineElementBeforeAfter';
 import PartialInlineElement from '../inlineElements/PartialInlineElement';
 
@@ -90,9 +91,8 @@ class SelectionScoper implements TraversingScoper {
             return null;
         }
 
-        // Temp code. Will be changed to using InlineElement.getStart/EndPosition() soon
-        let start = Position.FromEditorPoint(inline.getStartPoint());
-        let end = Position.FromEditorPoint(inline.getEndPoint());
+        let start = inline.getStartPosition();
+        let end = inline.getEndPosition();
 
         if (start.isAfter(this.end) || this.start.isAfter(end)) {
             return null;
@@ -116,8 +116,8 @@ class SelectionScoper implements TraversingScoper {
             : startPartial || endPartial
                 ? new PartialInlineElement(
                       inline,
-                      startPartial && start.toEditorPoint(),
-                      endPartial && end.toEditorPoint()
+                      startPartial && start,
+                      endPartial && end
                   )
                 : inline;
     }

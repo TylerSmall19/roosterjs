@@ -1,12 +1,14 @@
+import BlockElement from '../blockElements/BlockElement';
 import BodyScoper from './BodyScoper';
 import EmptyInlineElement from '../inlineElements/EmptyInlineElement';
+import InlineElement from '../inlineElements/InlineElement';
 import Position from '../selection/Position';
 import SelectionBlockScoper from './SelectionBlockScoper';
 import SelectionScoper from './SelectionScoper';
 import TraversingScoper from './TraversingScoper';
 import getBlockElementAtNode from '../blockElements/getBlockElementAtNode';
 import getNextPreviousInlineElement from '../inlineElements/getNextPreviousInlineElement';
-import { BlockElement, ContentPosition, InlineElement } from 'roosterjs-editor-types';
+import { ContentPosition } from 'roosterjs-editor-types';
 import { getInlineElementBeforeAfter } from '../inlineElements/getInlineElementBeforeAfter';
 import { getLeafSibling } from '../domWalker/getLeafSibling';
 
@@ -146,7 +148,8 @@ export default class ContentTraverser {
                 current.getStartPosition(),
                 isNext
             );
-            newInline = current.getParentBlock().isInBlock(newInline) ? newInline : null;
+            let block = getBlockElementAtNode(this.scoper.rootNode, current.getContainerNode());
+            newInline = block && block.isInBlock(newInline) ? newInline : null;
         } else {
             newInline = getNextPreviousInlineElement(this.scoper.rootNode, current, isNext);
             newInline =

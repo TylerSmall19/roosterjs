@@ -1,8 +1,8 @@
 import ContentTraverser from './ContentTraverser';
+import InlineElement from '../inlineElements/InlineElement';
 import Position from '../selection/Position';
 import createRange from '../selection/createRange';
 import matchWhiteSpaces from '../utils/matchWhiteSpaces';
-import { InlineElement } from 'roosterjs-editor-types';
 
 /**
  * The class that helps search content around a position

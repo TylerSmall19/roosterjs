@@ -76,7 +76,7 @@ class NodeInlineElement implements InlineElement {
      * Checks if an inline element is after the current inline element
      */
     public isAfter(inlineElement: InlineElement): boolean {
-        return isNodeAfter(this.containerNode, inlineElement.getContainerNode());
+        return inlineElement && isNodeAfter(this.containerNode, inlineElement.getContainerNode());
     }
 
     /**
@@ -102,8 +102,8 @@ class NodeInlineElement implements InlineElement {
 
         let startNode: Node = null;
         let endNode: Node = null;
-        let startOffset = NodeBoundary.Begin;
-        let endOffset = NodeBoundary.End;
+        let startOffset = 0;
+        let endOffset = PositionType.End;
 
         // Adjust the start point
         if (from) {
@@ -112,17 +112,17 @@ class NodeInlineElement implements InlineElement {
             if (
                 (startNode.nodeType == NodeType.Text &&
                     startOffset == startNode.nodeValue.length) ||
-                (startNode.nodeType == NodeType.Element && startOffset == NodeBoundary.End)
+                (startNode.nodeType == NodeType.Element && startOffset == PositionType.End)
             ) {
                 // The point is at the end of container element
                 startNode = getNextLeafSibling(this.containerNode, startNode);
-                startOffset = NodeBoundary.Begin;
+                startOffset = 0;
             }
         } else {
             startNode = this.containerNode;
             while (startNode.firstChild) {
                 startNode = startNode.firstChild;
-                startOffset = NodeBoundary.Begin;
+                startOffset = 0;
             }
         }
 
@@ -131,14 +131,14 @@ class NodeInlineElement implements InlineElement {
             endNode = to.node;
             endOffset = to.offset;
 
-            if (endOffset == NodeBoundary.Begin) {
+            if (endOffset == 0) {
                 // The point is at the begin of container element, use previous leaf
                 // Set endOffset to end of node
                 endNode = getPreviousLeafSibling(this.containerNode, endNode);
                 endOffset =
                     endNode && endNode.nodeType == NodeType.Text
                         ? endNode.nodeValue.length
-                        : NodeBoundary.End;
+                        : PositionType.End;
             }
         } else {
             endNode = this.containerNode;
@@ -149,7 +149,7 @@ class NodeInlineElement implements InlineElement {
             endOffset =
                 endNode && endNode.nodeType == NodeType.Text
                     ? endNode.nodeValue.length
-                    : NodeBoundary.End;
+                    : PositionType.End;
         }
 
         if (!startNode || !endNode) {
@@ -214,7 +214,7 @@ class NodeInlineElement implements InlineElement {
             }
 
             startNode = nextLeafNode;
-            startOffset = NodeBoundary.Begin;
+            startOffset = 0;
         }
     }
 }

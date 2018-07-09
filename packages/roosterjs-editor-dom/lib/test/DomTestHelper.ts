@@ -1,6 +1,8 @@
+import NodeBlockElement from '../blockElements/NodeBlockElement';
+import InlineElement from '../inlineElements/InlineElement';
+import Position from '../selection/Position';
+import StartEndBlockElement from '../blockElements/StartEndBlockElement';
 import resolveInlineElement from '../inlineElements/resolveInlineElement';
-import { InlineElement, EditorPoint } from 'roosterjs-editor-types';
-import { NodeBlockElement, StartEndBlockElement } from '../blockElements/BlockElement';
 
 // Create element with content and id and insert the element in the DOM
 export function createElementFromContent(id: string, content: string): HTMLElement {
@@ -45,20 +47,20 @@ export function runTestMethod2(
 // Check inlineElement equality based on startPoint, endPoint and textContent
 export function isInlineElementEqual(
     element: InlineElement,
-    startPoint: EditorPoint,
-    endPoint: EditorPoint,
+    startPoint: Position,
+    endPoint: Position,
     textContent: string
 ): boolean {
     return (
-        isEditorPointEqual(element.getStartPoint(), startPoint) &&
-        isEditorPointEqual(element.getEndPoint(), endPoint) &&
+        element.getStartPosition().equalTo(startPoint) &&
+        element.getEndPosition().equalTo(endPoint) &&
         element.getTextContent() == textContent
     );
 }
 
 // Check if two editor points are equal
-export function isEditorPointEqual(point1: EditorPoint, point2: EditorPoint): boolean {
-    return point1.containerNode.isEqualNode(point2.containerNode) && point1.offset == point2.offset;
+export function isEditorPointEqual(point1: Position, point2: Position): boolean {
+    return point1.node.isEqualNode(point2.node) && point1.offset == point2.offset;
 }
 
 // Create NodeBlockElement from given HTMLElement
@@ -80,7 +82,7 @@ export function createStartEndBlockElementWithStartEndNode(
 // Create inlineElement from node
 export function createInlineElementFromNode(node: Node, rootNode: Node): InlineElement {
     let parentBlock = new NodeBlockElement(node);
-    let inlineElement = resolveInlineElement(node, rootNode, parentBlock);
+    let inlineElement = resolveInlineElement(node, parentBlock);
     return inlineElement;
 }
 
@@ -93,10 +95,10 @@ export function createRangeFromChildNodes(node: Node): Range {
 }
 
 // Create range from start and end point
-export function createRangeWithStartEndNode(startPoint: EditorPoint, endPoint: EditorPoint): Range {
+export function createRangeWithStartEndNode(startPoint: Position, endPoint: Position): Range {
     let selectionRange = new Range();
-    selectionRange.setStart(startPoint.containerNode, startPoint.offset);
-    selectionRange.setEnd(endPoint.containerNode, endPoint.offset);
+    selectionRange.setStart(startPoint.node, startPoint.offset);
+    selectionRange.setEnd(endPoint.node, endPoint.offset);
     return selectionRange;
 }
 

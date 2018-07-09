@@ -1,7 +1,8 @@
 import * as DomTestHelper from '../DomTestHelper';
-import { NodeBlockElement } from '../../blockElements/BlockElement';
-import { InlineElement } from 'roosterjs-editor-types';
-import { NodeInlineElement } from '../..';
+import InlineElement from '../../inlineElements/InlineElement';
+import NodeBlockElement from '../../blockElements/NodeBlockElement';
+import NodeInlineElement from '../../inlineElements/NodeInlineElement';
+import Position from '../../selection/Position';
 
 let testID = 'NodeBlockElement';
 
@@ -148,8 +149,8 @@ describe('NodeBlockElement getFirstInlineElement()', () => {
     function runTest(input: string, startOffset: number, endOffset: number, node: Node) {
         // Arrange
         let [nodeBlockElement] = createNodeBlockElementWithContent(input);
-        let startPoint = { containerNode: node, offset: startOffset };
-        let endPoint = { containerNode: node, offset: endOffset };
+        let startPoint = new Position(node, startOffset);
+        let endPoint = new Position(node, endOffset);
 
         // Act
         let inlineElement = nodeBlockElement.getFirstInlineElement();
@@ -194,8 +195,8 @@ describe('NodeBlockElement getLastInlineElement()', () => {
     function runTest(input: string, startOffset: number, endOffset: number, node: Node) {
         // Arrange
         let [nodeBlockElement] = createNodeBlockElementWithContent(input);
-        let startPoint = { containerNode: node, offset: startOffset };
-        let endPoint = { containerNode: node, offset: endOffset };
+        let startPoint = new Position(node, startOffset);
+        let endPoint = new Position(node, endOffset);
 
         // Act
         let inlineElement = nodeBlockElement.getLastInlineElement();
@@ -229,45 +230,6 @@ describe('NodeBlockElement getLastInlineElement()', () => {
     it('input = <span>part2<img></span>', () => {
         let node = document.createElement('img');
         runTest('<span>part2<img></span>', 0, 1, node);
-    });
-});
-
-describe('NodeBlockElement getInlineElements()', () => {
-    afterEach(() => {
-        DomTestHelper.removeElement(testID);
-    });
-
-    function runTest(
-        inlineElement: InlineElement,
-        startOffset: number,
-        endOffset: number,
-        node: Node
-    ) {
-        let startPoint = { containerNode: node, offset: startOffset };
-        let endPoint = { containerNode: node, offset: endOffset };
-        expect(
-            DomTestHelper.isInlineElementEqual(
-                inlineElement,
-                startPoint,
-                endPoint,
-                node.textContent
-            )
-        ).toBe(true);
-    }
-
-    it('input = <img><span>part1</span><a>part2</a>', () => {
-        // Arrange
-        let [nodeBlockElement] = createNodeBlockElementWithContent(
-            '<img><span>part1</span><a>part2</a>'
-        );
-
-        // Act
-        let inlineElements = nodeBlockElement.getInlineElements();
-
-        // Assert
-        runTest(inlineElements[0], 0, 1, document.createElement('img'));
-        runTest(inlineElements[1], 0, 5, document.createTextNode('part1'));
-        runTest(inlineElements[2], 0, 5, document.createTextNode('part2'));
     });
 });
 
@@ -359,8 +321,7 @@ describe('NodeBlockElement isInBlock()', () => {
 
     function createNodeInlineElement(inlineElementContent: string): InlineElement {
         let testDiv = DomTestHelper.createElementFromContent(testID, inlineElementContent);
-        let parentBlock = new NodeBlockElement(testDiv);
-        let inlineElement = new NodeInlineElement(testDiv.firstChild, parentBlock);
+        let inlineElement = new NodeInlineElement(testDiv.firstChild);
         return inlineElement;
     }
 
@@ -369,18 +330,15 @@ describe('NodeBlockElement isInBlock()', () => {
         let [nodeBlockElement] = createNodeBlockElementWithContent(
             '<img><span>part1</span><a>part2</a>'
         );
-        let inlineElements = nodeBlockElement.getInlineElements();
         let myInlineElement = createNodeInlineElement('<span>www.example.com</span>');
 
         // Act
-        let isElement1InBlock = nodeBlockElement.isInBlock(inlineElements[0]);
-        let isElement2InBlock = nodeBlockElement.isInBlock(inlineElements[1]);
-        let isElement3InBlock = nodeBlockElement.isInBlock(inlineElements[2]);
+        let isElement1InBlock = nodeBlockElement.isInBlock(nodeBlockElement.getFirstInlineElement());
+        let isElement3InBlock = nodeBlockElement.isInBlock(nodeBlockElement.getLastInlineElement());
         let isElement4InBlock = nodeBlockElement.isInBlock(myInlineElement);
 
         // Assert
         expect(isElement1InBlock).toEqual(true);
-        expect(isElement2InBlock).toEqual(true);
         expect(isElement3InBlock).toEqual(true);
         expect(isElement4InBlock).toEqual(false);
     });

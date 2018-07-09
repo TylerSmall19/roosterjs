@@ -129,7 +129,7 @@ export default class EditorPickerPlugin implements EditorPickerPluginInterface {
                 if (nodeContent[nodeIndex] == this.pickerOptions.triggerCharacter) {
                     range.setStart(
                         textInline.getContainerNode(),
-                        textInline.getStartPoint().offset + nodeIndex
+                        textInline.getStartPosition().offset + nodeIndex
                     );
                     hasMatched = true;
                     break;
@@ -138,7 +138,7 @@ export default class EditorPickerPlugin implements EditorPickerPluginInterface {
             }
 
             if (hasMatched) {
-                range.setEnd(textInline.getContainerNode(), textInline.getEndPoint().offset);
+                range.setEnd(textInline.getContainerNode(), textInline.getEndPosition().offset);
             }
 
             return hasMatched;

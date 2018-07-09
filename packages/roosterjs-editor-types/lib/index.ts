@@ -34,6 +34,3 @@ export { default as InsertOption } from './interface/InsertOption';
 export { default as LinkData } from './interface/LinkData';
 export { default as Rect } from './interface/Rect';
 export { default as TableFormat } from './interface/TableFormat';
-
-// Legacy
-export { default as BlockElement } from './legacy/BlockElement';

@@ -7,7 +7,6 @@ import {
     DefaultFormat,
     DocumentCommand,
     ExtractContentEvent,
-    InlineElement,
     InsertOption,
     PluginEvent,
     PluginEventType,
@@ -19,6 +18,7 @@ import {
     Browser,
     PositionContentSearcher,
     ContentTraverser,
+    InlineElement,
     NodeBlockElement,
     Position,
     applyFormat,
@@ -26,13 +26,13 @@ import {
     fromHtml,
     getBlockElementAtNode,
     getElementOrParentElement,
-    getFirstBlockElement,
-    getInlineElementAtNode,
+    getFirstLastBlockElement,
     getTagOfNode,
     isNodeEmpty,
     markSelection,
     queryElements,
     removeMarker,
+    resolveInlineElement,
     wrap,
 } from 'roosterjs-editor-dom';
 
@@ -194,7 +194,8 @@ export default class Editor {
      * @requires The InlineElement result
      */
     public getInlineElementAtNode(node: Node): InlineElement {
-        return getInlineElementAtNode(this.core.contentDiv, node);
+        let block = getBlockElementAtNode(this.core.contentDiv, node);
+        return block && resolveInlineElement(node, block);
     }
 
     /**
@@ -861,7 +862,7 @@ export default class Editor {
     private ensureInitialContent(initialContent: string) {
         this.setContent(initialContent);
 
-        let firstBlock = getFirstBlockElement(this.core.contentDiv);
+        let firstBlock = getFirstLastBlockElement(this.core.contentDiv, true /*isFirst*/);
         let defaultFormatBlockElement: HTMLElement;
 
         if (!firstBlock) {

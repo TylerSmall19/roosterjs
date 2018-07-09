@@ -1,15 +1,19 @@
 import * as DomTestHelper from '../DomTestHelper';
-import {
-    getInlineElementAtNode,
-    getFirstInlineElement,
-    getLastInlineElement,
-    getNextPreviousInlineElement,
-} from '../../blockElements/BlockElement';
-import { NodeBoundary, InlineElement } from 'roosterjs-editor-types';
+import InlineElement from '../../inlineElements/InlineElement';
+import Position from '../../selection/Position';
+import getBlockElementAtNode from '../../blockElements/getBlockElementAtNode';
+import getNextPreviousInlineElement from '../../inlineElements/getNextPreviousInlineElement';
+import resolveInlineElement from '../../inlineElements/resolveInlineElement';
+import { PositionType } from 'roosterjs-editor-types';
 
 let testID = 'getInlineElement';
 
-describe('getInlineElement getInlineElementAtNode()', () => {
+function getInlineElementAtNode(root: Node, node: Node) {
+    let block = getBlockElementAtNode(root, node);
+    return block && resolveInlineElement(node, block);
+}
+
+describe('resolveInlineElement()', () => {
     afterEach(() => {
         DomTestHelper.removeElement(testID);
     });
@@ -22,8 +26,8 @@ describe('getInlineElement getInlineElementAtNode()', () => {
         endOffset: number
     ) {
         // Arrange
-        let startPoint = { containerNode: testNode, offset: startOffset };
-        let endPoint = { containerNode: testNode, offset: endOffset };
+        let startPoint = new Position(testNode, startOffset);
+        let endPoint = new Position(testNode, endOffset);
 
         // Act
         let inlineElement = getInlineElementAtNode(rootNode, node);
@@ -45,7 +49,7 @@ describe('getInlineElement getInlineElementAtNode()', () => {
             rootNode,
             rootNode.firstChild,
             rootNode.firstChild.firstChild,
-            NodeBoundary.Begin,
+            0,
             15
         );
     });
@@ -56,8 +60,8 @@ describe('getInlineElement getInlineElementAtNode()', () => {
             rootNode,
             rootNode.firstChild,
             rootNode.firstChild.firstChild,
-            NodeBoundary.Begin,
-            NodeBoundary.End
+            0,
+            PositionType.End
         );
     });
 
@@ -67,7 +71,7 @@ describe('getInlineElement getInlineElementAtNode()', () => {
             rootNode,
             rootNode.firstChild.firstChild,
             rootNode.firstChild.firstChild,
-            NodeBoundary.Begin,
+            0,
             3
         );
     });
@@ -81,105 +85,9 @@ describe('getInlineElement getInlineElementAtNode()', () => {
             rootNode,
             rootNode.firstChild.firstChild,
             rootNode.firstChild.firstChild,
-            NodeBoundary.Begin,
+            0,
             3
         );
-    });
-});
-
-describe('getInlineElement getFirstInlineElement()', () => {
-    afterEach(() => {
-        DomTestHelper.removeElement(testID);
-    });
-
-    function runTest(rootNode: Node, testNode: Node, startOffset: number, endOffset: number) {
-        // Arrange
-        let startPoint = { containerNode: testNode, offset: startOffset };
-        let endPoint = { containerNode: testNode, offset: endOffset };
-
-        // Act
-        let inlineElement = getFirstInlineElement(rootNode);
-
-        // Assert
-        expect(
-            DomTestHelper.isInlineElementEqual(
-                inlineElement,
-                startPoint,
-                endPoint,
-                testNode.textContent.substr(startOffset, endOffset)
-            )
-        ).toBe(true);
-    }
-
-    it('input = <div>www.example.com</div>, firstInlineElement = www.example.com', () => {
-        let rootNode = DomTestHelper.createElementFromContent(testID, '<div>www.example.com</div>');
-        runTest(rootNode, rootNode.firstChild.firstChild, NodeBoundary.Begin, 15);
-    });
-
-    it('input = <p><br></p>, firstInlineElement = <br>', () => {
-        let rootNode = DomTestHelper.createElementFromContent(testID, '<p><br></p>');
-        runTest(rootNode, rootNode.firstChild.firstChild, NodeBoundary.Begin, NodeBoundary.End);
-    });
-
-    it('input = <div>abc<br>123</div>, firstInlineElement = abc', () => {
-        let rootNode = DomTestHelper.createElementFromContent(testID, '<div>abc<br>123</div>');
-        runTest(rootNode, rootNode.firstChild.firstChild, NodeBoundary.Begin, 3);
-    });
-
-    it('input = <div>abc<div>123</div></div>, firstInlineElement = abc', () => {
-        let rootNode = DomTestHelper.createElementFromContent(
-            testID,
-            '<div>abc<div>123</div></div>'
-        );
-        runTest(rootNode, rootNode.firstChild.firstChild, NodeBoundary.Begin, 3);
-    });
-});
-
-describe('getInlineElement getLastInlineElement()', () => {
-    afterEach(() => {
-        DomTestHelper.removeElement(testID);
-    });
-
-    function runTest(rootNode: Node, testNode: Node, startOffset: number, endOffset: number) {
-        // Arrange
-        let startPoint = { containerNode: testNode, offset: startOffset };
-        let endPoint = { containerNode: testNode, offset: endOffset };
-
-        // Act
-        let inlineElement = getLastInlineElement(rootNode);
-
-        // Assert
-        expect(
-            DomTestHelper.isInlineElementEqual(
-                inlineElement,
-                startPoint,
-                endPoint,
-                testNode.textContent.substr(startOffset, endOffset)
-            )
-        ).toBe(true);
-    }
-
-    it('input = <div>www.example.com</div>, lastInlineElement = www.example.com', () => {
-        let rootNode = DomTestHelper.createElementFromContent(testID, '<div>www.example.com</div>');
-        runTest(rootNode, rootNode.firstChild.firstChild, NodeBoundary.Begin, 15);
-    });
-
-    it('input = <p><br></p>, lastInlineElement = <br>', () => {
-        let rootNode = DomTestHelper.createElementFromContent(testID, '<p><br></p>');
-        runTest(rootNode, rootNode.firstChild.firstChild, NodeBoundary.Begin, NodeBoundary.End);
-    });
-
-    it('input = <div>abc<br>123</div>, lastInlineElement = 123', () => {
-        let rootNode = DomTestHelper.createElementFromContent(testID, '<div>abc<br>123</div>');
-        runTest(rootNode, rootNode.firstChild.lastChild, NodeBoundary.Begin, 3);
-    });
-
-    it('input = <div>abc<div>123</div></div>, lastInlineElement = 123', () => {
-        let rootNode = DomTestHelper.createElementFromContent(
-            testID,
-            '<div>abc<div>123</div></div>'
-        );
-        runTest(rootNode, rootNode.firstChild.lastChild.firstChild, NodeBoundary.Begin, 3);
     });
 });
 
@@ -196,8 +104,8 @@ describe('getInlineElement getNextInlineElement()', () => {
         endOffset: number
     ) {
         // Arrange
-        let startPoint = { containerNode: testNode, offset: startOffset };
-        let endPoint = { containerNode: testNode, offset: endOffset };
+        let startPoint = new Position(testNode, startOffset);
+        let endPoint = new Position(testNode, endOffset);
 
         // Act
         let inlineElement = getNextPreviousInlineElement(rootNode, currentInline, true);
@@ -253,8 +161,8 @@ describe('getInlineElement getNextInlineElement()', () => {
             rootNode,
             currentInline,
             rootNode.firstChild.firstChild.nextSibling,
-            NodeBoundary.Begin,
-            NodeBoundary.End
+            0,
+            PositionType.End
         );
     });
 
@@ -271,7 +179,7 @@ describe('getInlineElement getNextInlineElement()', () => {
             rootNode,
             currentInline,
             rootNode.firstChild.lastChild.firstChild,
-            NodeBoundary.Begin,
+            0,
             3
         );
     });
@@ -290,8 +198,8 @@ describe('getInlineElement getPreviousInlineElement()', () => {
         endOffset: number
     ) {
         // Arrange
-        let startPoint = { containerNode: testNode, offset: startOffset };
-        let endPoint = { containerNode: testNode, offset: endOffset };
+        let startPoint = new Position(testNode, startOffset);
+        let endPoint = new Position(testNode, endOffset);
 
         // Act
         let inlineElement = getNextPreviousInlineElement(rootNode, currentInline, false);
@@ -347,8 +255,8 @@ describe('getInlineElement getPreviousInlineElement()', () => {
             rootNode,
             currentInline,
             rootNode.firstChild.firstChild.nextSibling,
-            NodeBoundary.Begin,
-            NodeBoundary.End
+            0,
+            PositionType.End
         );
     });
 
@@ -361,6 +269,6 @@ describe('getInlineElement getPreviousInlineElement()', () => {
             rootNode.firstChild.lastChild,
             rootNode
         );
-        runTest(rootNode, currentInline, rootNode.firstChild.firstChild, NodeBoundary.Begin, 3);
+        runTest(rootNode, currentInline, rootNode.firstChild.firstChild, 0, 3);
     });
 });

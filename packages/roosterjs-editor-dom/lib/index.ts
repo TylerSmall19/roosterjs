@@ -1,21 +1,17 @@
-export {
-    default as BlockElement,
-    getBlockElementAtNode,
-    getFirstBlockElement,
-    getFirstLastBlockElement,
-    getLastBlockElement,
-} from './blockElements/BlockElement';
-export { default as NodeBlockElement } from './blockElements/BlockElement';
-export { default as StartEndBlockElement } from './blockElements/StartEndBlockElement';
-
-
-export { default as ContentTraverser } from './contentTraverser/ContentTraverser';
-export { default as PositionContentSearcher } from './contentTraverser/PositionContentSearcher';
-export { default as TraversingScoper } from './contentTraverser/TraversingScoper';
-
 export { getNextLeafSibling, getPreviousLeafSibling } from './domWalker/getLeafSibling';
 export { getFirstLeafNode, getLastLeafNode } from './domWalker/getLeafNode';
 
+export { default as Position } from './selection/Position';
+export { default as createRange } from './selection/createRange';
+export { markSelection, removeMarker } from './selection/selectionMarker';
+
+export { default as BlockElement } from './blockElements/BlockElement';
+export { default as NodeBlockElement } from './blockElements/NodeBlockElement';
+export { default as StartEndBlockElement } from './blockElements/StartEndBlockElement';
+export { default as getBlockElementAtNode } from './blockElements/getBlockElementAtNode';
+export { default as getFirstLastBlockElement } from './blockElements/getFirstLastBlockElement';
+
+export { default as InlineElement } from './inlineElements/InlineElement';
 export { default as ImageInlineElement } from './inlineElements/ImageInlineElement';
 export { default as LinkInlineElement } from './inlineElements/LinkInlineElement';
 export { default as NodeInlineElement } from './inlineElements/NodeInlineElement';
@@ -26,6 +22,10 @@ export {
     getInlineElementBefore,
     getInlineElementAfter,
 } from './inlineElements/getInlineElementBeforeAfter';
+
+export { default as ContentTraverser } from './contentTraverser/ContentTraverser';
+export { default as PositionContentSearcher } from './contentTraverser/PositionContentSearcher';
+export { default as TraversingScoper } from './contentTraverser/TraversingScoper';
 
 export { default as Browser, getBrowserInfo } from './utils/Browser';
 export { default as applyFormat } from './utils/applyFormat';
@@ -51,7 +51,3 @@ export { default as queryElements } from './utils/queryElements';
 export { default as splitParentNode } from './utils/splitParentNode';
 export { default as unwrap } from './utils/unwrap';
 export { default as wrap } from './utils/wrap';
-
-export { default as Position } from './selection/Position';
-export { default as createRange } from './selection/createRange';
-export { markSelection, removeMarker } from './selection/selectionMarker';
